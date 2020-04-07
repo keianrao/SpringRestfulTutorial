@@ -16,8 +16,8 @@ CommandLineRunner initDatabase(EmployeeRepository repository)
 		public void run(String... args)
 		{
 			Employee
-				frodo = new Employee("Frodo Baggins", "Burglar"),
-				bilbo = new Employee("Bilbo Baggins", "Thief");
+				frodo = new Employee("Frodo", "Baggins", "Burglar"),
+				bilbo = new Employee("Bilbo", "Baggins", "Thief");
 			
 			log.info("Preloading " + repository.save(frodo));
 			log.info("Preloading " + repository.save(bilbo));
