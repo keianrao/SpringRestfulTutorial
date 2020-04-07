@@ -32,5 +32,7 @@ out/
 .vscode/
 
 ### Eclipse ###
-.bin/
 /bin/
+
+### Unix ###
+./.attach*
