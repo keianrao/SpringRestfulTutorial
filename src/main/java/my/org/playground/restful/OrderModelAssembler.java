@@ -12,13 +12,24 @@ class OrderModelAssembler
 implements RepresentationModelAssembler<Order, EntityModel<Order>> {
 
 public EntityModel<Order> toModel(Order order) {
-	return new EntityModel<Order>(
+	EntityModel<Order> model = new EntityModel<Order>(
 		order,
 		linkTo(methodOn(OrderController.class).getById(order.getId()))
 			.withSelfRel(),
 		linkTo(methodOn(OrderController.class).getAll())
 			.withRel("orders")
 	);
+	
+	if (order.getStatus() == Status.IN_PROGRESS) {
+		model.add(
+			linkTo(methodOn(OrderController.class).complete(order.getId()))
+				.withRel("complete"),
+			linkTo(methodOn(OrderController.class).cancel(order.getId()))
+				.withRel("cancel")
+		);
+	}
+	
+	return model;
 }
 
 }

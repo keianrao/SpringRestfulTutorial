@@ -25,6 +25,15 @@ CommandLineRunner initDatabase(
 			orderRepository.findAll().forEach( order -> {
 				log.info("Successfully preloaded " + order);
 			});
+			/*
+			 * Note: U Core is a nice tester object here, as 
+			 * you can see the available operations on it.
+			 * 
+			 * However, if you are browsing through Firefox, all clicked links
+			 * are accessed with a GET request, so it will error out. This is 
+			 * expected behaviour. You have to use something like cURL,
+			 * per the tutorial, and do '-X PUT' or '-X DELETE'. 
+			 */
 		}
 	};
 }
