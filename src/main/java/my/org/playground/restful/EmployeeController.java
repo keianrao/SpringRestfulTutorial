@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 @RestController
 class EmployeeController {
 
-//  Variables   //  \\  //  \\  //  \\
+//  Members     //  \\  //  \\  //  \\
 	
 private final EmployeeRepository repository;
 
