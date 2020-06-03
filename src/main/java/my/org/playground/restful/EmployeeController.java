@@ -40,17 +40,6 @@ EmployeeController(
 
 //  Public interface    //  \\  //  \\
 
-@PostMapping("/employees")
-ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee)
-throws URISyntaxException {
-	EntityModel<Employee> model = 
-		assembler.toModel(repository.save(newEmployee));
-	
-	return ResponseEntity
-		.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-		.body(model);
-}
-
 @GetMapping("/employees")
 CollectionModel<EntityModel<Employee>> getAll() {
 	List<EntityModel<Employee>> models =
@@ -74,20 +63,30 @@ EntityModel<Employee> getById(@PathVariable Long id) {
 	return assembler.toModel(employee);
 }
 
+
+@PostMapping("/employees")
+ResponseEntity<EntityModel<Employee>> newEmployee(@RequestBody Employee employee)
+throws URISyntaxException {
+	EntityModel<Employee> model = assembler.toModel(repository.save(employee));
+	
+	return ResponseEntity
+		.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+		.body(model);
+}
+
 @PutMapping("/employees/{id}")
-ResponseEntity<?> replaceEmployee(
+ResponseEntity<EntityModel<Employee>> replaceEmployee(
 		@RequestBody Employee newEmployee, @PathVariable Long id) {
-	Employee updatedEmployee = 
-		repository
-			.findById(id).map( employee -> {
-				employee.setName(newEmployee.getName());
-				employee.setRole(newEmployee.getRole());
-				return repository.save(employee);
-			})
-			.orElseGet( () -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	Employee updatedEmployee = repository
+		.findById(id).map( employee -> {
+			employee.setName(newEmployee.getName());
+			employee.setRole(newEmployee.getRole());
+			return repository.save(employee);
+		})
+		.orElseGet( () -> {
+			newEmployee.setId(id);
+			return repository.save(newEmployee);
+		});
 	
 	EntityModel<Employee> model = assembler.toModel(updatedEmployee);
 	
@@ -98,7 +97,7 @@ ResponseEntity<?> replaceEmployee(
 
 
 @DeleteMapping("/employees/{id}")
-ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
+ResponseEntity<EntityModel<Employee>> deleteEmployee(@PathVariable Long id) {
 	if (repository.existsById(id)) {
 		repository.deleteById(id);
 	}

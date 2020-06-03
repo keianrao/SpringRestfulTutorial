@@ -21,7 +21,7 @@ public class OrderController {
 
 //  Members     //  \\  //  \\  //  \\
 	
-private final OrderRepository orderRepository;
+private final OrderRepository repository;
 private final OrderModelAssembler assembler;
 
 
@@ -29,8 +29,8 @@ private final OrderModelAssembler assembler;
 //  Constructors    \\  //  \\  //  \\
 
 OrderController(
-		OrderRepository orderRepository, OrderModelAssembler assembler) {
-	this.orderRepository = orderRepository;
+		OrderRepository repository, OrderModelAssembler assembler) {
+	this.repository = repository;
 	this.assembler = assembler;
 }
 
@@ -41,34 +41,63 @@ OrderController(
 @GetMapping("/orders")
 CollectionModel<EntityModel<Order>> getAll() {
 	List<EntityModel<Order>> models =
-		orderRepository.findAll().stream()
+		repository.findAll().stream()
 			.map(assembler::toModel)
 			.collect(Collectors.toList());
 	
 	return new CollectionModel<EntityModel<Order>>(
-		models
+		models,
+		linkTo(methodOn(OrderController.class).getAll())
+			.withSelfRel()
 	);
 }
 
 @GetMapping("/orders/{id}")
 EntityModel<Order> getById(@PathVariable Long id) {
-	Order order = orderRepository.findById(id)
+	Order order = repository.findById(id)
 		.orElseThrow( () -> new OrderNotFoundException(id) );
 	
 	return assembler.toModel(order);
 }
 
-@PostMapping
+
+@PostMapping("/orders")
 ResponseEntity<EntityModel<Order>> newOrder(@RequestBody Order order) {
 	order.setStatus(Status.IN_PROGRESS);
-	Order newOrder = orderRepository.save(order);
+	EntityModel<Order> model = assembler.toModel(order);
 	
 	return ResponseEntity
-		.created(
-			linkTo(methodOn(OrderController.class).getById(order.getId()))
-				.toUri()
-		)
-		.body(assembler.toModel(newOrder));
+		.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+		.body(model);
+}
+
+@PutMapping("/orders/{id}")
+ResponseEntity<EntityModel<Order>> newOrder(
+		@RequestBody Order order, @PathVariable Long id) {
+	Order updatedOrder = repository
+		.findById(id).map( existingOrder -> {
+			existingOrder.setDescription(order.getDescription());
+			existingOrder.setStatus(order.getStatus());
+			return repository.save(existingOrder);
+		})
+		.orElseGet( () -> {
+			order.setId(id);
+			return repository.save(order);
+		});
+	
+	EntityModel<Order> model = assembler.toModel(updatedOrder);
+	
+	return ResponseEntity
+		.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+		.body(model);
+}
+
+@DeleteMapping("/orders/{id}")
+ResponseEntity<EntityModel<Order>> deleteOrder(@PathVariable Long id) {
+	if (repository.existsById(id)) {
+		repository.deleteById(id);
+	}
+	return ResponseEntity.noContent().build();
 }
 
 }
