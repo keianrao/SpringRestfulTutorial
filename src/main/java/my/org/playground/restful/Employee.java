@@ -2,6 +2,8 @@ package my.org.playground.restful;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -65,6 +67,17 @@ public void setId(Long id) {
 
 public void setRole(String role) {
 	this.role = role;
+}
+
+
+public boolean equals(Object other) {
+	if (!(other instanceof Order))
+		return false;
+	return Objects.hashCode(other) == Objects.hashCode(this);
+}
+
+public int hashCode() {
+	return Objects.hash(id, firstName, lastName, role);
 }
 
 }

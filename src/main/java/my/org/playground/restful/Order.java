@@ -1,19 +1,28 @@
 package my.org.playground.restful;
 
+import lombok.Data;
+
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
-import java.util.Objects;
 
-@Entity
+@Data @Entity
 @Table(name = "CUSTOMER_ORDER")
 public class Order {
+
+//  Variables   //  \\  //  \\  //  \\
 	
 private @Id @GeneratedValue Long id;
 
 private String description;
 private Status status;
+
+
+
+//  Constructors    \\  //  \\  //  \\
 
 Order() { }
 
@@ -21,6 +30,10 @@ Order(String description, Status status) {
 	this.description = description;
 	this.status = status;
 }
+
+
+
+//  Public interface    //  \\  //  \\
 
 public Long getId() {
 	return id;
@@ -44,6 +57,17 @@ public void setDescription(String description) {
 
 public void setStatus(Status status) {
 	this.status = status;
+}
+
+
+public boolean equals(Object other) {
+	if (!(other instanceof Order))
+		return false;
+	return Objects.hashCode(other) == Objects.hashCode(this);
+}
+
+public int hashCode() {
+	return Objects.hash(id, description, status);
 }
 
 }

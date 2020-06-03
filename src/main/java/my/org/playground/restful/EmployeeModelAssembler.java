@@ -8,8 +8,8 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-class EmployeeModelAssembler implements 
-RepresentationModelAssembler<Employee, EntityModel<Employee>> {
+class EmployeeModelAssembler 
+implements RepresentationModelAssembler<Employee, EntityModel<Employee>> {
 
 public EntityModel<Employee> toModel(Employee employee) {
 	return new EntityModel<Employee>(
