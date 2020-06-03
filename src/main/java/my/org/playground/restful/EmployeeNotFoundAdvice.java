@@ -12,8 +12,7 @@ class EmployeeNotFoundAdvice {
 @ResponseBody
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @ExceptionHandler(EmployeeNotFoundException.class)
-String handleEmployeeNotFoundException(EmployeeNotFoundException eEnf)
-{
+String handleEmployeeNotFoundException(EmployeeNotFoundException eEnf) {
 	return eEnf.getMessage();
 }
 	

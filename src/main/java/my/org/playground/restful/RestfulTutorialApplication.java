@@ -6,10 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RestfulTutorialApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RestfulTutorialApplication.class, args);
-	}
-	
-	
+public static void main(String[] args) {
+	SpringApplication.run(RestfulTutorialApplication.class, args);
+}
 	
 }

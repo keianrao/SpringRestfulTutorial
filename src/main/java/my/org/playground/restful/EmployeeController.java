@@ -19,17 +19,30 @@ import java.net.URISyntaxException;
 @RestController
 class EmployeeController {
 
+//  Variables   //  \\  //  \\  //  \\
+	
 private final EmployeeRepository repository;
 
 private final EmployeeModelAssembler assembler;
 
-//  \\  //  \\  //  \\
 
+
+//  Constructors    \\  //  \\  //  \\
+
+EmployeeController(
+		EmployeeRepository repository, 
+		EmployeeModelAssembler assembler) {
+	this.repository = repository;
+	this.assembler = assembler;
+}
+
+
+
+//  Public interface    //  \\  //  \\
 
 @PostMapping("/employees")
 ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee)
-throws URISyntaxException
-{
+throws URISyntaxException {
 	EntityModel<Employee> model = 
 		assembler.toModel(repository.save(newEmployee));
 	
@@ -39,8 +52,7 @@ throws URISyntaxException
 }
 
 @GetMapping("/employees")
-CollectionModel<EntityModel<Employee>> getAll() 
-{
+CollectionModel<EntityModel<Employee>> getAll() {
 	List<EntityModel<Employee>> models =
 		repository.findAll().stream()
 			.map(assembler::toModel)
@@ -54,8 +66,7 @@ CollectionModel<EntityModel<Employee>> getAll()
 }
 
 @GetMapping("/employees/{id}")
-EntityModel<Employee> getById(@PathVariable Long id)
-{
+EntityModel<Employee> getById(@PathVariable Long id) {
 	Employee employee = repository
 			.findById(id)
 			.orElseThrow( () -> new EmployeeNotFoundException(id) );
@@ -65,8 +76,7 @@ EntityModel<Employee> getById(@PathVariable Long id)
 
 @PutMapping("/employees/{id}")
 ResponseEntity<?> replaceEmployee(
-		@RequestBody Employee newEmployee, @PathVariable Long id)
-{
+		@RequestBody Employee newEmployee, @PathVariable Long id) {
 	Employee updatedEmployee = 
 		repository
 			.findById(id).map( employee -> {
@@ -88,23 +98,11 @@ ResponseEntity<?> replaceEmployee(
 
 
 @DeleteMapping("/employees/{id}")
-ResponseEntity<?> deleteEmployee(@PathVariable Long id)
-{
+ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
 	if (repository.existsById(id)) {
 		repository.deleteById(id);
 	}
 	return ResponseEntity.noContent().build();
 }
 
-
-//  \\  //  \\  //  \\
-
-EmployeeController(
-		EmployeeRepository repository, 
-		EmployeeModelAssembler assembler)
-{
-	this.repository = repository;
-	this.assembler = assembler;
-}
-	
 }

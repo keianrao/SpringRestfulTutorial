@@ -10,15 +10,11 @@ import org.springframework.boot.CommandLineRunner;
 class EmployeeRepositoryConfiguration {
 	
 @Bean
-CommandLineRunner initDatabase(EmployeeRepository repository)
-{
+CommandLineRunner initDatabase(EmployeeRepository repository) {
 	return new CommandLineRunner() {
-		public void run(String... args)
-		{
-			Employee
-				frodo = new Employee("Frodo", "Baggins", "Burglar"),
-				bilbo = new Employee("Bilbo", "Baggins", "Thief");
-			
+		public void run(String... args) {
+			Employee frodo = new Employee("Frodo", "Baggins", "Burglar");
+			Employee bilbo = new Employee("Bilbo", "Baggins", "Thief");
 			log.info("Preloading " + repository.save(frodo));
 			log.info("Preloading " + repository.save(bilbo));
 		}
